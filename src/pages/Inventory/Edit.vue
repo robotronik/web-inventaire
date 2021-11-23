@@ -3,7 +3,8 @@
 <div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
 <form @submit.prevent="handleform">
     <fieldset>
-    <legend>Modifier l'objet</legend>
+    <legend v-if="this.$route.name == 'invedit'">Modifier un objet</legend>
+    <legend v-else>Ajouter un objet</legend>
     <p v-if="message"><mark class="inline-block">{{message}}</mark></p>
     <p v-if="errors"><mark class="inline-block secondary">{{errors}}</mark></p>
     <div class="row">
