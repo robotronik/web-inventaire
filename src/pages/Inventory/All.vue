@@ -7,7 +7,8 @@
         <button :href="href" @click="navigate">Ajouter un objet</button>
     </router-link>
     <p v-if="errors"><mark class="inline-block secondary">{{errors}}</mark></p>
-    <table class="stripped">
+    <table class="stripped" style="max-height: none; overflow: hidden;">
+
     <caption><input type="text" placeholder="recherche" v-model="searchInput"></caption>
     <thead>
         <tr>
@@ -80,6 +81,8 @@ export default {
                             this.message = ""
                             this.errors = err.response?.data ?? err.message
                         })
+                } else {
+                    object.quantite -= amount
                 }
             }
         }

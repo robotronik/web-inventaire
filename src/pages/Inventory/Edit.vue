@@ -3,8 +3,7 @@
 <div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
 <form @submit.prevent="handleform">
     <fieldset>
-    <legend v-if="this.$route.name == 'invedit'">Modifier un objet</legend>
-    <legend v-else>Ajouter un objet</legend>
+    <legend>{{buttonText}} un objet</legend>
     <p v-if="message"><mark class="inline-block">{{message}}</mark></p>
     <p v-if="errors"><mark class="inline-block secondary">{{errors}}</mark></p>
     <div class="row">
@@ -39,15 +38,24 @@
     </div>
     <div class="row">
         <div class="col-sm-12 col-md-3" style="align-self: center;">
+            <label for="image">Image</label>
+        </div>
+        <div class="col-sm-12 col-md-9 input-group fluid" style="align-self: center;">
+            <input type="file" name="image" id="image" @change="updateImage">
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-12 col-md-3" style="align-self: center;">
             <label for="name">Description</label>
         </div>
         <textarea id="description" class="col-sm-12 input-group fluid"
             rows="3" @input="updateObject('description', $event)"
-            placeholder="Description">{{object.description}}</textarea>
+            placeholder="Description" v-model="object.description"></textarea>
     </div>
     </fieldset>
     <button class="primary">{{buttonText}}</button>
-    <button class="secondary" v-if="this.$route.name == 'invedit'" @click.prevent="deleteObject">Supprimer</button>
+    <button class="secondary" v-if="isEditPage" @click.prevent="deleteObject">Supprimer</button>
 </form>
 </div>
 </div>
@@ -72,7 +80,7 @@ export default {
         }
     },
     mounted() {
-        if (this.$route.name == "invedit") {
+        if (this.isEditPage) {
             this.axios.get("obj/" + this.$route.params.id, {headers: this.$store.getters.getTokenHeader})
             .then(res => {
                 this.object = res.data;
@@ -87,12 +95,11 @@ export default {
     methods: {
         handleform(e) {
             this.object.id = this.object._id
-
-            const path = this.$route.name == "invedit" ? 'obj/update' : 'obj';
+            const path = this.isEditPage ? 'obj/update' : 'obj';
             this.axios.post(path, this.object, {headers: this.$store.getters.getTokenHeader})
                 .then(res => {
                     this.errors = ""
-                    this.message = 'objet ' + (this.$route.name == "invedit" ? 'modifié' : 'créé')
+                    this.message = 'objet ' + (this.isEditPage ? 'modifié' : 'créé')
                 })
                 .catch(err => {
                     this.message = ""
@@ -114,11 +121,27 @@ export default {
                         this.errors = err.response?.data ?? err.message
                     })
             }
+        },
+        updateImage(e) {
+            const i = e.target.files[0]
+            if (i.type.includes('image') && i.size < 10*1024^2) {
+                const r = new FileReader()
+                r.onload = (e) => {
+                    this.object.image = 'data:' + i.type + ';base64,' + btoa(e.target.result);
+                }
+                r.readAsBinaryString(i)
+                this.errors = ""
+            } else {
+                this.errors = "type de fichier non supporté"
+            }
         }
     },
     computed: {
         buttonText() {
-            return this.$route.name == "invedit" ? 'Modifier' : 'Ajouter'
+            return this.isEditPage ? 'Modifier' : 'Ajouter'
+        },
+        isEditPage() {
+            return this.$route.name == "invedit"
         }
     }
 }
