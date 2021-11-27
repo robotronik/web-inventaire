@@ -1,5 +1,5 @@
 # Inventaire
-inventaire simple en vue3 & mini.css
+inventaire en vue3 & mini.css
 
 ## setup
 `npm install`

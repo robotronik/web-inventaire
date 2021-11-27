@@ -6,7 +6,6 @@ export const auth = {
         token: null,
         expiresat: null,
     }),
-
     actions: {
         login({ state, commit }, payload) {
             return new Promise((resolve, reject) => {
@@ -22,26 +21,24 @@ export const auth = {
             })
         }
     },
-
     mutations: {
         loginsuccess(state, payload) {
-            state.loggedin = true;
-            state.token = payload.token;
-            state.expiresat = payload.expiresat;
+            state.loggedin = true
+            state.token = payload.token
+            state.expiresat = payload.expiresat
         },
         logout(state) {
-            state.loggedin = false;
-            state.token = null;
-            state.expiresat = null;
+            state.loggedin = false
+            state.token = null
+            state.expiresat = null
         }
     },
-
     getters: {
         loggedin(state) {
-            return state.loggedin;
+            return state.loggedin
         },
         getTokenHeader(state) {
-            return { 'Token': state.token };
+            return { 'Token': state.token }
         }
     }
 }

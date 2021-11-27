@@ -1,26 +1,3 @@
-<script>
-export default {
-    data() {
-        return {
-            errors: ""
-        }
-    },
-    methods: {
-        login(e) {
-            this.$store.dispatch('login', {
-                username: e.target.elements.username.value,
-                password: e.target.elements.password.value
-            }).then(res => {
-                this.$router.push(this.$route.query.ret ?? {name: 'home'})
-            })
-            .catch(err => {
-                this.errors = err.response?.data ?? err.message
-            })
-        }
-    }
-}
-</script>
-
 <template>
 <div class="row">
 <div class="col-sm"></div>
@@ -56,3 +33,26 @@ export default {
 <div class="col-sm"></div>
 </div>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            errors: ""
+        }
+    },
+    methods: {
+        login(e) {
+            this.$store.dispatch('login', {
+                username: e.target.elements.username.value,
+                password: e.target.elements.password.value
+            }).then(res => {
+                this.$router.push(this.$route.query.ret ?? {name: 'home'})
+            })
+            .catch(err => {
+                this.errors = err.response?.data ?? err.message
+            })
+        }
+    }
+}
+</script>

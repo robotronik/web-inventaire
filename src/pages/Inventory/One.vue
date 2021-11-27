@@ -30,12 +30,9 @@ export default {
         }
     },
     mounted() {
-        this.axios.get("obj/" + this.$route.params.id, {headers: this.$store.getters.getTokenHeader})
+        this.axios.get("obj/" + this.$route.params.id)
             .then(res => {
                 this.object = res.data;
-            })
-            .catch(err => {
-                console.error(err)
             })
     },
 }

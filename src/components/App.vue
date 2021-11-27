@@ -1,7 +1,3 @@
-<script setup>
-import Head from './Head.vue';
-</script>
-
 <template>
     <Head />
     <div class="container">
@@ -9,5 +5,9 @@ import Head from './Head.vue';
     </div>
 </template>
 
-<style>
-</style>
+<script>
+import Head from './Head.vue';
+export default {
+    components: { Head }
+}
+</script>

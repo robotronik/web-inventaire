@@ -1,7 +1,7 @@
 import {createStore} from 'vuex'
 import {auth} from './auth.js'
-
 import VuexPersistence from 'vuex-persist'
+
 const localstorage = new VuexPersistence({
   storage: window.localStorage
 })

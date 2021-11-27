@@ -1,37 +1,3 @@
-<script>import axios from "axios";
-
-export default {
-    data() {
-        return {
-            errors: "",
-            message: ""
-        }
-    },
-    methods: {
-        register(e) {
-            const els = e.target.elements;
-            if (els.pwd.value == els.pwdc.value) {
-                const body = {
-                    username: els.username.value,
-                    passwd: els.pwd.value
-                }
-                this.axios.post("login/create", body)
-                    .then(res => {
-                        this.errors = ""
-                        this.message = res.data
-                    })
-                    .catch(err => {
-                        this.message = ""
-                        this.errors = err.response?.data ?? err.message
-                    })
-            } else {
-                console.log("mots de passe differents")
-            }
-        }
-    }
-}
-</script>
-
 <template>
 <div class="row">
 <div class="col-sm"></div>
@@ -67,3 +33,36 @@ export default {
 <div class="col-sm"></div>
 </div>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            errors: "",
+            message: ""
+        }
+    },
+    methods: {
+        register(e) {
+            const els = e.target.elements;
+            if (els.pwd.value == els.pwdc.value) {
+                const body = {
+                    username: els.username.value,
+                    passwd: els.pwd.value
+                }
+                this.axios.post("login/create", body)
+                    .then(res => {
+                        this.errors = ""
+                        this.message = res.data
+                    })
+                    .catch(err => {
+                        this.message = ""
+                        this.errors = err.response?.data ?? err.message
+                    })
+            } else {
+                this.errors = 'mots de passe différents'
+            }
+        }
+    }
+}
+</script>
