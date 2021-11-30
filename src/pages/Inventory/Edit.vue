@@ -13,7 +13,7 @@
             <label for="titre">Titre</label>
         </div>
         <div class="col-sm-12 col-md-9 input-group fluid" style="align-self: center;">
-            <input type="text" v-model="titre" id="titre" placeholder="Titre">
+            <input type="text" v-model="titre" id="titre" placeholder="Titre" ref="titre">
         </div>
     </div>
 
@@ -23,8 +23,8 @@
         </div>
         <div class="col-sm-12 col-md-9 input-group fluid" style="align-self: center;">
             <input type="number" v-model="quantite" id="quantite" placeholder="Quantité">
-            <button @click.prevent="quantite++">+</button>
-            <button @click.prevent="quantite--">-</button>
+            <button @click.prevent="quantite++" tabindex="-1">+</button>
+            <button @click.prevent="quantite--" tabindex="-1">-</button>
         </div>
     </div>
 
@@ -35,20 +35,20 @@
         <div class="col-sm-12 col-md-9 input-group fluid" style="align-self: center;">
             <select name="category" id="category"  style="width:100%" v-model="categorie">
                 <option disabled selected value="">--</option>
-                <option selected>passifs</option>
+                <option :value="c._id" v-for="c in categories" :key="c._id">{{c.nom}}</option>
             </select>
         </div>
     </div>
 
     <div class="row">
         <div class="col-sm-12 col-md-3" style="align-self: center;">
-            <label for="localisation">Localisation</label>
+            <label for="localisation">Salle</label>
         </div>
         <div class="col-sm-12 col-md-9 input-group fluid" style="align-self: center;">
             <select name="localisation" id="localisation"  style="width:100%" v-model="localisation">
                 <option disabled selected value="">--</option>
                 <option value="z210">Club (Z210)</option>
-                <option value="z214">Salle 3D (Z214)</option>
+                <option value="z214">Salle Imprimantes (Z214)</option>
                 <option value="z501">Repair corner (Z501)</option>
             </select>
         </div>
@@ -59,7 +59,10 @@
             <label for="image">Image</label>
         </div>
         <div class="col-sm-12 col-md-9 input-group fluid" style="align-self: center;">
-            <input type="file" name="image" id="image" @change="updateImage">
+            <img :src="image" :alt="titre" v-if="image" width="400"><br>
+            <button type="button"><label for="image">Upload</label></button>
+            <input type="file" name="image" id="image" @change="updateImage"
+                    accept="image/*" class="inputfile" tabindex="-1">
         </div>
     </div>
     <br>
@@ -84,12 +87,25 @@
 </div>
 </template>
 
+<style>
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+</style>
+
 <script>
 export default {
     data() {
         return this.initialData();
     },
     mounted() {
+        this.loadCategories()
+
         if (this.isEditPage) {
             this.axios.get("obj/" + this.$route.params.id)
             .then(res => {
@@ -107,6 +123,9 @@ export default {
                 this.errors = err.response?.data ?? err.message
             })
         }
+    },
+    beforeUpdate() {
+        this.$refs.titre.focus()
     },
     methods: {
         handleform(e) {
@@ -126,7 +145,7 @@ export default {
         },
         deleteObject() {
             if (confirm("Etes vous sur ?")) {
-                this.axios.delete("obj/delete/"+ this.id)
+                this.axios.delete("obj/"+ this.id)
                     .then(res => {
                         this.errors = ""
                         this.message = res.data
@@ -147,7 +166,7 @@ export default {
                 r.readAsBinaryString(i)
                 this.errors = ""
             } else {
-                this.errors = "type de fichier non supporté"
+                this.errors = "fichier non supporté ou trop lourd (10MB)"
             }
         },
         getObject() {
@@ -163,6 +182,7 @@ export default {
         },
         initialData() {
             return {
+                categories: [],
                 id: "",
                 titre: "",
                 description: "",
@@ -176,6 +196,16 @@ export default {
         },
         resetObject() {
             Object.assign(this.$data, this.initialData());
+            this.loadCategories()
+        },
+        loadCategories() {
+            this.axios.get("categorie")
+                .then(res => {
+                    this.categories = res.data;
+                })
+                .catch(err => {
+                    this.errors = err.response?.data ?? err.message
+                })
         }
     },
     computed: {

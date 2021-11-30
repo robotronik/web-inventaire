@@ -13,7 +13,20 @@
     <p v-if="errors"><mark class="inline-block secondary">{{errors}}</mark></p>
     <table class="stripped" style="max-height: none; overflow: hidden;">
 
-    <caption><input type="text" placeholder="recherche" v-model="searchInput"></caption>
+    <caption>
+        <input type="text" placeholder="recherche" v-model="searchInput">
+        <select v-model="currentCategory">
+            <option selected value="">Trier par catégorie</option>
+            <option :value="c._id" v-for="c in categories" :key="c._id">{{c.nom}}</option>
+        </select>
+        <select v-model="currentLocation">
+            <option selected value="">Trier par salle</option>
+            <option value="z210">Club (Z210)</option>
+            <option value="z214">Salle Imprimantes (Z214)</option>
+            <option value="z501">Repair corner (Z501)</option>
+        </select>
+    </caption>
+
     <thead>
         <tr>
             <th>Nom</th>
@@ -26,16 +39,19 @@
         <tr v-for="o in filtered_objects" :key="o._id">
             <td data-label="Nom">{{o.titre}}</td>
             <td data-label="Description">{{o.description}}</td>
-            <td data-label="Quantité">{{o.quantite}}</td>
-            <td style="text-align: center;">
-                <button @click="addQuantity(o, 1)">+</button>
+            <td data-label="Quantité">
                 <button @click="addQuantity(o, -1)">-</button>
+                {{o.quantite}}
+                <button @click="addQuantity(o, 1)">+</button>
+            </td>
+            <td style="text-align: center;">
                 <router-link :to="{name:'invone', params: {id: o._id}}" v-slot="{href, navigate}">
                     <button :href="href" @click="navigate">Voir</button>
                 </router-link>
                 <router-link :to="{name:'invedit', params: {id: o._id}}" v-slot="{href, navigate}">
-                    <button :href="href" @click="navigate">Editer</button>
+                    <button :href="href" @click="navigate">Modifier</button>
                 </router-link>
+                    <button type="button" @click="deleteObject(o._id)" class="secondary">Supprimer</button>
             </td>
         </tr>
     </tbody>
@@ -49,7 +65,10 @@ export default {
     data() {
         return {
             objects: [],
+            categories: [],
             searchInput: "",
+            currentCategory: "",
+            currentLocation: "",
             errors: ""
         }
     },
@@ -57,6 +76,10 @@ export default {
         this.axios.get("obj")
             .then(res => {
                 this.objects = res.data
+            })
+        this.axios.get("categorie")
+            .then(res => {
+                this.categories = res.data
             })
     },
     methods: {
@@ -73,33 +96,36 @@ export default {
                     object.quantite -= amount
                 })
             } else {
-                if (confirm(`Etes vous sur de supprimer ${object.titre} ?`)) {
-                    this.axios.delete("obj/delete/"+ object._id)
-                        .then(res => {
-                            this.errors = ""
-                            this.message = res.data
-                            this.objects = this.objects.filter(e => e._id != object._id)
-                        })
-                        .catch(err => {
-                            this.message = ""
-                            this.errors = err.response?.data ?? err.message
-                        })
-                } else {
-                    object.quantite -= amount
-                }
+                    this.deleteObject(object._id)
+                    //object.quantite -= amount
+            }
+        },
+        deleteObject(id) {
+            if (confirm(`Etes vous sur ?`)) {
+                this.axios.delete("obj/"+ id)
+                    .then(res => {
+                        this.errors = ""
+                        this.message = res.data
+                        this.objects = this.objects.filter(e => e._id != id)
+                    })
+                    .catch(err => {
+                        this.message = ""
+                        this.errors = err.response?.data ?? err.message
+                    })
             }
         }
     },
     computed: {
         filtered_objects() {
-            if (this.searchInput != "") {
-                return this.objects.filter(el => {
-                    return el.titre.toLowerCase().includes(this.searchInput.toLowerCase()) ||
-                     el.description.toLowerCase().includes(this.searchInput.toLowerCase())
-                })
-            } else {
-                return this.objects
-            }
+            return this.objects.filter(({titre, description, categorie, localisation}) => {
+                let searchString = this.searchInput.toLowerCase()
+                titre = titre.toLowerCase()
+                description = description.toLowerCase()
+
+                return searchString && (description.includes(searchString) || titre.includes(searchString)) || !searchString
+                        && (categorie == this.currentCategory || !this.currentCategory)
+                        && (localisation == this.currentLocation || !this.currentLocation)
+            })
         }
     }
 }
