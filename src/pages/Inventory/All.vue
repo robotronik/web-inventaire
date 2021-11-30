@@ -102,8 +102,9 @@ export default {
                     object.quantite -= amount
                 })
             } else {
-                    this.deleteObject(object._id)
-                    //object.quantite -= amount
+                if (!this.deleteObject(object._id)) {
+                    object.quantite -= amount
+                }
             }
         },
         deleteObject(id) {
@@ -118,6 +119,9 @@ export default {
                         this.message = ""
                         this.errors = err.response?.data ?? err.message
                     })
+                return true
+            } else {
+                return false
             }
         },
         resetFilters() {
