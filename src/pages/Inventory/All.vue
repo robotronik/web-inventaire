@@ -28,6 +28,8 @@
             <option value="z501">Repair corner (Z501)</option>
         </select>
 
+        <button @click="resetFilters" v-if="this.searchInput || this.currentCategoryId || this.currentLocation">Annuler</button>
+
         <p>{{currentCategory?.description}}</p>
     </caption>
 
@@ -117,6 +119,9 @@ export default {
                         this.errors = err.response?.data ?? err.message
                     })
             }
+        },
+        resetFilters() {
+            this.searchInput = this.currentCategoryId = this.currentLocation = ""
         }
     },
     computed: {
@@ -126,7 +131,7 @@ export default {
                 titre = titre.toLowerCase()
                 description = description.toLowerCase()
 
-                return searchString && (description.includes(searchString) || titre.includes(searchString)) || !searchString
+                return ((description.includes(searchString) || titre.includes(searchString)) || !searchString)
                         && (categorie == this.currentCategoryId || !this.currentCategoryId)
                         && (localisation == this.currentLocation || !this.currentLocation)
             })
