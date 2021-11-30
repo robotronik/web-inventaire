@@ -15,16 +15,20 @@
 
     <caption>
         <input type="text" placeholder="recherche" v-model="searchInput">
-        <select v-model="currentCategory">
+
+        <select v-model="currentCategoryId">
             <option selected value="">Trier par catégorie</option>
             <option :value="c._id" v-for="c in categories" :key="c._id">{{c.nom}}</option>
         </select>
+
         <select v-model="currentLocation">
             <option selected value="">Trier par salle</option>
             <option value="z210">Club (Z210)</option>
             <option value="z214">Salle Imprimantes (Z214)</option>
             <option value="z501">Repair corner (Z501)</option>
         </select>
+
+        <p>{{currentCategory?.description}}</p>
     </caption>
 
     <thead>
@@ -67,7 +71,7 @@ export default {
             objects: [],
             categories: [],
             searchInput: "",
-            currentCategory: "",
+            currentCategoryId: "",
             currentLocation: "",
             errors: ""
         }
@@ -123,9 +127,12 @@ export default {
                 description = description.toLowerCase()
 
                 return searchString && (description.includes(searchString) || titre.includes(searchString)) || !searchString
-                        && (categorie == this.currentCategory || !this.currentCategory)
+                        && (categorie == this.currentCategoryId || !this.currentCategoryId)
                         && (localisation == this.currentLocation || !this.currentLocation)
             })
+        },
+        currentCategory() {
+            return this.categories.find(c => c._id == this.currentCategoryId)
         }
     }
 }
