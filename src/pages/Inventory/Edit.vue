@@ -105,6 +105,7 @@ export default {
     },
     mounted() {
         this.loadCategories()
+        this.$refs.titre.focus()
 
         if (this.isEditPage) {
             this.axios.get("obj/" + this.$route.params.id)
@@ -123,9 +124,6 @@ export default {
                 this.errors = err.response?.data ?? err.message
             })
         }
-    },
-    beforeUpdate() {
-        this.$refs.titre.focus()
     },
     methods: {
         handleform(e) {
