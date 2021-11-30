@@ -24,7 +24,7 @@
                     <button @click.prevent="updateCat(c._id)" :class="c._id != '' ? '': 'tertiary'">
                         {{ c._id != '' ? 'Modifier' : 'Ajouter'}}
                     </button>
-                    <button @click.prevent="deleteCat(c._id)" class="secondary">Supprimer</button>
+                    <button @click.prevent="deleteCat(c._id)" class="secondary" v-if="c._id">Supprimer</button>
                 </td>
             </tr>
             <tr>
@@ -50,7 +50,6 @@ export default {
     mounted() {
         this.axios.get("categorie")
             .then(res => {
-                console.log(res.data)
                 this.categories = res.data
             })
     },
@@ -59,11 +58,12 @@ export default {
             const path = id != '' ? 'categorie/update' : 'categorie';
             this.axios.post(path, this.getCatObject(id))
             .then(res => {
-                let i = this.categories.findIndex(c => c._id == id)
-                this.categories[i]._id = res.data._id
-
+                if (id == '') {
+                    let i = this.categories.findIndex(c => c._id == id)
+                    this.categories[i]._id = res.data._id
+                }
                 this.errors = ''
-                this.message = 'objet créé'
+                this.message = 'catégorie ' +(id != '' ? 'modifiée' : 'créée')
             })
             .catch(err => {
                 this.message = ''
@@ -87,7 +87,13 @@ export default {
             }
         },
         addCat() {
-            this.categories.push({_id:  "", nom: "", description:""})
+            if (!this.categories.find(c => c._id == '')) {
+                this.categories.push({_id:  "", nom: "", description:""})
+                this.errors = ''
+            } else {
+                this.message = ''
+                this.errors = "ajoutez d'abord la nouvelle categorie"
+            }
         },
         getCatObject(id) {
             let o = this.categories.find(o => o._id === id)

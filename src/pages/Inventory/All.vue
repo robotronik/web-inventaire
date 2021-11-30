@@ -45,9 +45,9 @@
                 <button @click="addQuantity(o, 1)">+</button>
             </td>
             <td style="text-align: center;">
-                <router-link :to="{name:'invone', params: {id: o._id}}" v-slot="{href, navigate}">
+                <!--<router-link :to="{name:'invone', params: {id: o._id}}" v-slot="{href, navigate}">
                     <button :href="href" @click="navigate">Voir</button>
-                </router-link>
+                </router-link>-->
                 <router-link :to="{name:'invedit', params: {id: o._id}}" v-slot="{href, navigate}">
                     <button :href="href" @click="navigate">Modifier</button>
                 </router-link>
