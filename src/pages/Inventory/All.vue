@@ -1,7 +1,9 @@
 <template>
 <div class="row">
 <div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
-    <h1>Inventaire <small>{{objects.length}} elements</small></h1>
+    <h1>Inventaire
+        <small><span v-if="filtersActive">{{filtered_objects.length}} /</span> {{objects.length}} elements</small>
+        </h1>
 
     <router-link :to="{name:'invadd'}" v-slot="{href, navigate}">
         <button :href="href" @click="navigate">Ajouter un objet</button>
@@ -28,7 +30,7 @@
             <option value="z501">Repair corner (Z501)</option>
         </select>
 
-        <button @click="resetFilters" v-if="this.searchInput || this.currentCategoryId || this.currentLocation">Annuler</button>
+        <button @click="resetFilters" v-if="filtersActive">Annuler</button>
 
         <p>{{currentCategory?.description}}</p>
     </caption>
@@ -142,6 +144,9 @@ export default {
         },
         currentCategory() {
             return this.categories.find(c => c._id == this.currentCategoryId)
+        },
+        filtersActive() {
+            return this.searchInput || this.currentCategoryId || this.currentLocation
         }
     }
 }
