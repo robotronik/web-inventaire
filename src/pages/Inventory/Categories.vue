@@ -1,13 +1,9 @@
 <template>
 <div class="row">
 <div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
-<div class="row">
-<div class="col-sm-12">
+    <h1>Catégories</h1>
     <p v-if="message"><mark class="inline-block">{{message}}</mark></p>
     <p v-if="errors"><mark class="inline-block secondary">{{errors}}</mark></p>
-</div>
-<div class="col-sm">
-    <h2>Catégories</h2>
     <table class="stripped" style="max-height: none; overflow: hidden;">
         <thead>
             <tr>
@@ -32,8 +28,6 @@
             </tr>
         </tbody>
     </table>
-</div>
-</div>
 </div>
 </div>
 </template>
