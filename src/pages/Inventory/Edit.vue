@@ -23,8 +23,8 @@
         </div>
         <div class="col-sm-12 col-md-9 input-group fluid" style="align-self: center;">
             <input type="number" v-model="quantite" id="quantite" placeholder="Quantité">
-            <button @click.prevent="quantite++" tabindex="-1">+</button>
             <button @click.prevent="quantite--" tabindex="-1">-</button>
+            <button @click.prevent="quantite++" tabindex="-1">+</button>
         </div>
     </div>
 
@@ -60,7 +60,7 @@
         </div>
         <div class="col-sm-12 col-md-9 input-group fluid" style="align-self: center;">
             <img :src="image" :alt="titre" v-if="image" width="400"><br>
-            <button type="button"><label for="image">Upload</label></button>
+            <label for="image" class="button" style="text-align:center;">📷</label>
             <input type="file" name="image" id="image" @change="updateImage"
                     accept="image/*" class="inputfile" tabindex="-1">
         </div>
