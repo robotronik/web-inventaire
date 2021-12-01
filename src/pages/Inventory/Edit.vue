@@ -76,7 +76,7 @@
     </div>
     </fieldset>
 
-    <button class="primary">{{buttonText}}</button>
+    <button :class="isEditPage ? 'primary': 'tertiary'">{{buttonText}}</button>
     <button class="secondary" v-if="isEditPage" @click.prevent="deleteObject">Supprimer</button>
 
     <router-link :to="{name:'invadd'}" v-slot="{href, navigate}" v-if="isEditPage" style="float: right;">
