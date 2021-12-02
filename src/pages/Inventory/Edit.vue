@@ -22,8 +22,8 @@
             <label for="quantite">Quantité</label>
         </div>
         <div class="col-sm-12 col-md-9 input-group fluid" style="align-self: center;">
-            <input type="number" v-model="quantite" id="quantite" placeholder="Quantité">
-            <button @click.prevent="quantite--" tabindex="-1">-</button>
+            <input type="number" v-model="quantite" id="quantite" placeholder="Quantité" min="1">
+            <button @click.prevent="(quantite > 1) && quantite--" tabindex="-1">-</button>
             <button @click.prevent="quantite++" tabindex="-1">+</button>
         </div>
     </div>
