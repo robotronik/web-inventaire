@@ -15,7 +15,7 @@
         <tbody>
             <tr v-for="c in categories" :key="c._id">
                 <td><input type="text" v-model="c.nom" style="width:100%;"></td>
-                <td><input type="text" v-model="c.description" style="width:100%;"></td>
+                <td><textarea type="text" rows="1" v-model="c.description" style="width:100%;"/></td>
                 <td style="text-align: center;">
                     <button @click.prevent="updateCat(c._id)" :class="c._id != '' ? '': 'tertiary'">
                         {{ c._id != '' ? 'Modifier' : 'Ajouter'}}
