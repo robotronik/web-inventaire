@@ -32,7 +32,7 @@
 
         <button @click="resetFilters" v-if="filtersActive">Annuler</button>
 
-        <p>{{currentCategory?.description}}</p>
+        <p style="white-space: pre;">{{currentCategory?.description}}</p>
     </caption>
 
     <thead>
