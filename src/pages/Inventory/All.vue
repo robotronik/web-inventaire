@@ -40,7 +40,10 @@
             <th>Nom</th>
             <th>Description</th>
             <th>Quantité</th>
-            <th>Actions</th>
+            <th>
+                Actions
+                <label style="cursor: pointer;" @click="loadData">🔄</label>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -81,16 +84,19 @@ export default {
         }
     },
     mounted() {
-        this.axios.get("obj")
-            .then(res => {
-                this.objects = res.data
-            })
-        this.axios.get("categorie")
-            .then(res => {
-                this.categories = res.data
-            })
+        this.loadData()
     },
     methods: {
+        loadData() {
+            this.axios.get("obj")
+                .then(res => {
+                    this.objects = res.data
+                })
+            this.axios.get("categorie")
+                .then(res => {
+                    this.categories = res.data
+                })
+        },
         addQuantity(object, amount) {
             object.quantite += amount
             object.id = object._id
