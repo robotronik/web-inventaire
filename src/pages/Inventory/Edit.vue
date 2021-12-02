@@ -59,8 +59,11 @@
             <label for="image">Image</label>
         </div>
         <div class="col-sm-12 col-md-9 input-group fluid" style="align-self: center;">
-            <img :src="image" :alt="titre" v-if="image" width="400"><br>
+            <img :src="image" :alt="titre" v-if="image"><br>
+
             <label for="image" class="button" style="text-align:center;">📷</label>
+            <button @click.prevent="deleteImage" v-if="image">🗑️</button>
+
             <input type="file" name="image" id="image" @change="updateImage"
                     accept="image/*" class="inputfile" tabindex="-1">
         </div>
@@ -156,15 +159,38 @@ export default {
         },
         updateImage(e) {
             const i = e.target.files[0]
+            console.log(i)
             if (i.type.includes('image') && i.size < 10*1024^2) {
+
                 const r = new FileReader()
                 r.onload = (e) => {
-                    this.image = 'data:' + i.type + ';base64,' + btoa(e.target.result);
+                    const img = new Image()
+                    img.onload = () => {
+                        const max = import.meta.env.VITE_MAX_IMAGE_WH
+                        const needsResize = (Math.max(img.width, img.height) > max)
+                        const ratio = Math.min(max/img.width, max/img.height)
+                        const newW = (needsResize ? ratio : 1) * img.width
+                        const newH = (needsResize ? ratio : 1) * img.height
+
+                        const c = document.createElement('canvas')
+                        c.width = newW
+                        c.height = newH
+                        const ctx = c.getContext('2d')
+                        ctx.drawImage(img, 0, 0, newW, newH)
+                        this.image = c.toDataURL(i.type)
+                    }
+                    img.src = e.target.result //chargement de l'image puis img.onload()
                 }
-                r.readAsBinaryString(i)
+                r.readAsDataURL(i) //chargement du fichier puis r.onload()
+
                 this.errors = ""
             } else {
-                this.errors = "fichier non supporté ou trop lourd (10MB)"
+                this.errors = "fichier non supporté ou trop lourd (10MB max)"
+            }
+        },
+        deleteImage() {
+            if (confirm("Voulez vous supprimer l'image ?")) {
+                this.image = ""
             }
         },
         getObject() {
