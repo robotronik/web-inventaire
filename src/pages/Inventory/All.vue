@@ -39,7 +39,10 @@
         <tr>
             <th>Nom</th>
             <th>Description</th>
-            <th>Quantité</th>
+            <th>
+                Quantité
+                <input type="checkbox" style="vertical-align: middle;top: -2px;" v-model="showQuantitytButtons">
+            </th>
             <th>
                 Actions
                 <label style="cursor: pointer;" @click="loadData">🔄</label>
@@ -49,11 +52,14 @@
     <tbody>
         <tr v-for="o in filtered_objects" :key="o._id">
             <td data-label="Nom">{{o.titre}}</td>
-            <td data-label="Description">{{o.description}}</td>
+            <td data-label="Description" style="white-space: pre;">
+            {{o.description.split(/[\r\n]+/)[0] +
+                (o.description.split(/[\r\n]+/)[1] ? '...' : '')}}
+            </td>
             <td data-label="Quantité">
-                <button @click="addQuantity(o, -1)">-</button>
+                <button @click="addQuantity(o, -1)" v-if="showQuantitytButtons">-</button>
                 {{o.quantite}}
-                <button @click="addQuantity(o, 1)">+</button>
+                <button @click="addQuantity(o, +1)" v-if="showQuantitytButtons">+</button>
             </td>
             <td style="text-align: center;">
                 <!--<router-link :to="{name:'invone', params: {id: o._id}}" v-slot="{href, navigate}">
@@ -71,6 +77,7 @@
 </div>
 </template>
 
+
 <script>
 export default {
     data() {
@@ -80,7 +87,8 @@ export default {
             searchInput: "",
             currentCategoryId: "",
             currentLocation: "",
-            errors: ""
+            errors: "",
+            showQuantitytButtons: false
         }
     },
     mounted() {

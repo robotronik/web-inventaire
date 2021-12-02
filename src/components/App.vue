@@ -11,3 +11,10 @@ export default {
     components: { Head }
 }
 </script>
+
+<style>
+td {
+    display: flex;
+    align-items: center;
+}
+</style>
